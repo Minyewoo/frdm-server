@@ -283,14 +283,14 @@ impl AcDevice {
         let dbg = self.name.join();
         let error = Error::new(&dbg, "read");
         let exit = self.exit.clone();
-        log::debug!("{}.read | Get node map...", dbg);
+        log::debug!("{dbg}.read | Get node map...");
         let mut notify = ChangeNotify::new(
             &dbg,
             NotifyState::Offline,
             vec![
-                (NotifyState::Suspend,  Box::new(|_: ()| log::info!("{dbg}.read | Suspended"))),
-                (NotifyState::Read, Box::new(|_: ()| log::info!("{dbg}.read | Receiving frames..."))),
-                (NotifyState::Offline, Box::new(|_: ()| log::info!("{dbg}.read | Dissconnected"))),
+                (NotifyState::Suspend,  Box::new(|_: ()| log::info!(".read | Suspended"))),
+                (NotifyState::Read, Box::new(|_: ()| log::info!(".read | Receiving frames..."))),
+                (NotifyState::Offline, Box::new(|_: ()| log::info!(".read | Dissconnected"))),
             ],
         );
         match self.node() {
