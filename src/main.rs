@@ -24,11 +24,14 @@ fn main() {
     let mut camera = Camera::new(Default::default(), conf);
     let recv = camera.stream();
     let handle = camera.read().unwrap();
-    let window = "Retrived";
-    if let Err(err) = opencv::highgui::named_window(window, opencv::highgui::WINDOW_NORMAL) {
-        log::warn!("{}.stream | Create Window Error: {}", dbg, err);
+    #[cfg(feature = "ui")]
+    {
+        let window = "Retrived";
+        if let Err(err) = opencv::highgui::named_window(window, opencv::highgui::WINDOW_NORMAL) {
+            log::warn!("{}.stream | Create Window Error: {}", dbg, err);
+        }
+        opencv::highgui::wait_key(1).unwrap();
     }
-    opencv::highgui::wait_key(1).unwrap();
     let conf = Conf {
         normalize: NormalizeConf::default(),
         fast_scan: FastScanConf::default(),
@@ -77,10 +80,13 @@ fn main() {
     );
     for frame in recv {
         log::trace!("{dbg} | Frame width: {},  height: {}, timestamp: {}", frame.width(), frame.height(), frame.meta);
-        if let Err(err) = opencv::highgui::imshow(window, &frame.mat) {
-            log::warn!("{}.stream | Display img error: {:?}", dbg, err);
-        };
-        opencv::highgui::wait_key(1).unwrap();
+        #[cfg(feature = "ui")]
+        {
+            if let Err(err) = opencv::highgui::imshow(window, &frame.mat) {
+                log::warn!("{}.stream | Display img error: {:?}", dbg, err);
+            };
+            opencv::highgui::wait_key(1).unwrap();
+        }
         let result = scan_rope.eval(frame);
         _ = result;
     }

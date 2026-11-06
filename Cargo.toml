@@ -9,6 +9,7 @@ build = "build.rs"
 #
 # Used for `Plot` service and `fnPlot` function only
 # plot = ["dep:winit"]
+ui = ["dep:winit", "dep:egui", "dep:egui_plot", "dep:eframe", "opencv/highgui"]
 
 
 [dependencies]
@@ -43,7 +44,7 @@ strum_macros = { version = "^0.28" }                        # , git = "https://g
 #
 #
 # OpenCV
-opencv = { version = "^0.99", features = ["clang-runtime"] }    # , git = "https://github.com/twistedfall/opencv-rust"
+opencv = { version = "^0.99", default-features = false, features = ["imgproc", "imgcodecs", "videoio", "bgsegm", "clang-runtime"] }    # , git = "https://github.com/twistedfall/opencv-rust"
 #
 #
 # Photon image processing
@@ -66,10 +67,10 @@ kanal = { version = "^0.1" }            # , git = "https://github.com/fereidani/
 parking_lot = { version = "^0.12" }     # , git = "https://github.com/Amanieu/parking_lot.git"
 #
 # UI
-egui = "^0.35"
-egui_plot = "^0.36"
-eframe = "^0.35"
-winit = { version = "^0.30", optional = false }
+egui = { version = "^0.35", optional = true }
+egui_plot = { version = "^0.36", optional = true }
+eframe = { version = "^0.35", optional = true }
+winit = { version = "^0.30", optional = true }
 #
 # Terminal tools
 crossterm = "^0.29"

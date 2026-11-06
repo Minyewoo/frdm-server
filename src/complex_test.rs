@@ -326,6 +326,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let w_fast = "Fast Scan";
             let w_fine = "Fine Scan";
             for window in [w_source, w_crop, w_gray, w_fast_contours, w_fine_contours, w_fast, w_fine] {
+                #[cfg(feature = "ui")]
                 if let Err(err) = opencv::highgui::named_window(window, opencv::highgui::WINDOW_NORMAL) {
                     log::warn!("{dbg} | Create Window Error: {}", err);
                 }
@@ -363,6 +364,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             );
             for frame in stream {
                 log::trace!("{dbg} | Frame width: {},  height: {}, timestamp: {}", frame.width(), frame.height(), frame.meta);
+                #[cfg(feature = "ui")]
                 opencv::highgui::imshow(w_source, &frame.mat).unwrap();
                 let ctx = fine_scan.eval(frame.clone()).wait().unwrap().unwrap();
                 let result_meta: &MetaCtx = ctx.read();
@@ -384,13 +386,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let crop = draw_rope_dimensions::<FineScanCtx>(&dbg, crop, &ctx, &conf.fine_scan.rope_dimensions).unwrap();
                 let crop = draw_rope_defects::<FineScanCtx>(&dbg, crop, &ctx).unwrap();
                 let crop = draw_rope_distortions::<FineScanCtx>(&dbg, crop, &ctx).unwrap();
-                if !crop.empty() { opencv::highgui::imshow(w_crop, &crop).unwrap(); }
-                if !gray.frame.mat.empty() { opencv::highgui::imshow(w_gray, &gray.frame.mat).unwrap(); }
-                if !fast_contours_ctx.result.mat.empty() { opencv::highgui::imshow(w_fast_contours, &fast_contours_ctx.result.mat).unwrap(); }
-                if !fine_contours_ctx.result.mat.empty() { opencv::highgui::imshow(w_fine_contours, &fine_contours_ctx.result.mat).unwrap(); }
-                if !fast_ctx.union.frame.mat.empty() { opencv::highgui::imshow(w_fast, &fast_ctx.union.frame.mat).unwrap(); }
-                if !fine_ctx.union.frame.mat.empty() { opencv::highgui::imshow(w_fine, &fine_ctx.union.frame.mat).unwrap(); }
-                opencv::highgui::wait_key(0).unwrap();
+                #[cfg(feature = "ui")]
+                {
+                    if !crop.empty() { opencv::highgui::imshow(w_crop, &crop).unwrap(); }
+                    if !gray.frame.mat.empty() { opencv::highgui::imshow(w_gray, &gray.frame.mat).unwrap(); }
+                    if !fast_contours_ctx.result.mat.empty() { opencv::highgui::imshow(w_fast_contours, &fast_contours_ctx.result.mat).unwrap(); }
+                    if !fine_contours_ctx.result.mat.empty() { opencv::highgui::imshow(w_fine_contours, &fine_contours_ctx.result.mat).unwrap(); }
+                    if !fast_ctx.union.frame.mat.empty() { opencv::highgui::imshow(w_fast, &fast_ctx.union.frame.mat).unwrap(); }
+                    if !fine_ctx.union.frame.mat.empty() { opencv::highgui::imshow(w_fine, &fine_ctx.union.frame.mat).unwrap(); }
+                    opencv::highgui::wait_key(0).unwrap();
+                }
             }
             // let _: Vec<()> = handles.into_iter().map(|h| h.join().unwrap()).collect();
         }
