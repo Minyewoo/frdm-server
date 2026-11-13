@@ -31,6 +31,24 @@ Lens focal length | Image width  | Image hight | Field depth    | Image deformat
    sudo apt install libopencv-dev clang libclang-dev
     ```
 
+   If you want headless OpenCV installation, consider building it from source:
+   ```bash
+   git clone https://github.com/opencv/opencv.git
+   cd opencv
+   mkdir build && cd build
+   cmake -D CMAKE_BUILD_TYPE=Release \
+       -D CMAKE_INSTALL_PREFIX=/usr/local \
+       -D WITH_GTK=OFF \
+       -D WITH_QT=OFF \
+       -D WITH_X11=OFF \
+       -D WITH_IPP=ON \
+       -D BUILD_LIST=core,imgproc,imgcodecs,videoio,bgsegm \
+       ..
+   make -j$(nproc)
+   sudo make install
+   ```
+   Take attention to `BUILD_LIST` param, it contains only modules used in FRDM lib, if something is missing - add it.
+
 - Used Arena SDK for Linux (integrated using OpenCV)
     - **Importent:** Be shure the MTU for ethernet interfgace used by camera is set to 900 bytes
     - **Importent:** Also folluw [this instruction](src/infrostructure/arena/readme.md) to properly setup network inteface
